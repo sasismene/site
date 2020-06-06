@@ -1,0 +1,79 @@
+WordprocessingDocument document = WordprocessingDocument.Create(
+            @"C:\test PFE.docx",
+            WordprocessingDocumentType.Document
+        );
+
+
+
+        MainDocumentPart mainDocumentPart = document.AddMainDocumentPart();
+
+
+        mainDocumentPart.Document = new Document();
+        mainDocumentPart.Document.AddNamespaceDeclaration("ve", "http://schemas.openxmlformats.org/markup-compatibility/2006");
+        mainDocumentPart.Document.AddNamespaceDeclaration("o", "urn:schemas-microsoft-com:office:office");
+        mainDocumentPart.Document.AddNamespaceDeclaration("r", "http://schemas.openxmlformats.org/officeDocument/2006/relationships");
+        mainDocumentPart.Document.AddNamespaceDeclaration("m", "http://schemas.openxmlformats.org/officeDocument/2006/math");
+        mainDocumentPart.Document.AddNamespaceDeclaration("v", "urn:schemas-microsoft-com:vml");
+        mainDocumentPart.Document.AddNamespaceDeclaration("wp", "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing");
+        mainDocumentPart.Document.AddNamespaceDeclaration("w10", "urn:schemas-microsoft-com:office:word");
+        mainDocumentPart.Document.AddNamespaceDeclaration("w", "http://schemas.openxmlformats.org/wordprocessingml/2006/main");
+        mainDocumentPart.Document.AddNamespaceDeclaration("wne", "http://schemas.microsoft.com/office/word/2006/wordml");
+
+
+
+        Body documentBody = new Body();
+        mainDocumentPart.Document.Append(documentBody);
+
+
+        StyleDefinitionsPart styleDefinitionsPart =
+        mainDocumentPart.AddNewPart<StyleDefinitionsPart>();
+
+
+        FileStream stylesTemplate =
+            new FileStream("styles.xml", FileMode.Open, FileAccess.Read);
+        styleDefinitionsPart.FeedData(stylesTemplate);
+        styleDefinitionsPart.Styles.Save();
+
+
+
+        #region Titre du document
+
+
+        Paragraph titleParagraphe = new Paragraph() { RsidParagraphAddition = "00AF4948", RsidParagraphProperties = "00625634", RsidRunAdditionDefault = "00625634" }; ;
+
+        Run run = new Run();
+        RunProperties rpr = new RunProperties();
+        RunStyle rstylr = new RunStyle { Val = "style1" };
+        run.Append(rpr);
+        Text t = new Text("open");
+        run.Append(t);
+        titleParagraphe.Append(run);
+
+        run = new Run();
+        rpr = new RunProperties();
+        rstylr = new RunStyle { Val = "style2" };
+        run.Append(rpr);
+        t = new Text("packaging")
+        {
+            Space = new DocumentFormat.OpenXml.EnumValue<DocumentFormat.OpenXml.SpaceProcessingModeValues> { InnerText = "preserve" }
+        };
+        run.Append(t);
+        titleParagraphe.Append(run);
+
+        run = new Run();
+        rpr = new RunProperties();
+        rstylr = new RunStyle { Val = "style1" };
+        run.Append(rpr);
+        t = new Text("conventions")
+        {
+            Space = new DocumentFormat.OpenXml.EnumValue<DocumentFormat.OpenXml.SpaceProcessingModeValues> { InnerText = "preserve" }
+        };
+        run.Append(t);
+        titleParagraphe.Append(run);
+
+
+        documentBody.Append(titleParagraphe);
+
+
+        document.MainDocumentPart.Document.Save();
+        document.Dispose(); 
